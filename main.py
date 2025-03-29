@@ -8,6 +8,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 
 from PIL import Image
+#from PIL.ImageQt import ImageQt
+from PIL import ImageFilter
+from PIL.ImageFilter import SHARPEN
 
 app = QApplication([])
 win = QWidget()
@@ -101,6 +104,31 @@ class ImageProcessor():
             os.mkdir(path)
         img_path = os.path.join(path, self.filename)
         self.image.save(img_path)
+    
+    def do_left(self):
+        self.image = self.image.transpose(Image.ROTATE_90)
+        self.saveImage()
+        img_path = os.path.join(self.dir, self.save_dir, self.filename)
+        self.showImage(img_path)
+    
+    def do_right(self):
+        self.image = self.image.transpose(Image.ROTATE_270)
+        self.saveImage()
+        img_path = os.path.join(self.dir, self.save_dir, self.filename)
+        self.showImage(img_path)
+    
+    def do_sharpen(self):
+        self.image = self.image.filter(SHARPEN)
+        self.saveImage()
+        img_path = os.path.join(self.dir, self.save_dir, self.filename)
+        self.showImage(img_path)
+    
+    def do_flip(self):
+        self.image = self.image.transpose(Image.FLIP_LEFT_RIGHT)
+        self.saveImage()
+        img_path = os.path.join(self.dir, self.save_dir, self.filename)
+        self.showImage(img_path)
+
 
 workimage = ImageProcessor()
 
@@ -113,6 +141,10 @@ def showChosenImage():
 
 filess.currentRowChanged.connect(showChosenImage)
 btn_bw.clicked.connect(workimage.do_bw)
+btn_left.clicked.connect(workimage.do_left)
+btn_right.clicked.connect(workimage.do_right)
+btn_sharp.clicked.connect(workimage.do_sharpen)
+btn_mir.clicked.connect(workimage.do_flip)
 
 app.exec()
 
